@@ -1,9 +1,10 @@
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv()
 
+
+HOSTING = "hackthebookshelf.loca.lt"
 
 #DATABASE
 DB_NAME: str = os.getenv("DB_NAME", "")

@@ -19,7 +19,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
-    "hackthebookshelf.loca.lt",
+    config.HOSTING,
+]
+
+CORS_ALLOWED_ORIGINS = [
+    f'https://{config.HOSTING}',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    f'https://{config.HOSTING}',
 ]
 
 # Application definition
