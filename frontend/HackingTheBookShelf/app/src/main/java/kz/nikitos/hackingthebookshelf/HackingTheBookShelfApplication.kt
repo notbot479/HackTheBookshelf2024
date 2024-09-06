@@ -1,7 +1,6 @@
 package kz.nikitos.hackingthebookshelf
 
-import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class HackingTheBookShelfApplication: Application()
+class HackingTheBookShelfApplication: BaseApplication()
