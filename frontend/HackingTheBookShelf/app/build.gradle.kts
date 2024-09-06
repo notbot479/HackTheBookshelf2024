@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.dagger.hilt)
+    id("kotlin-kapt")
 }
 
 val keyStoreProperties = Properties()
@@ -83,6 +85,11 @@ dependencies {
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.serialization.ktx.json)
+    implementation(libs.ktor.client.content.negotiation)
+
+    implementation(libs.hilt)
+    kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
