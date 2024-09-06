@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-0q6tfven)e*o$rhf#ls@e-*rdt@#9eb&-r1iu=%i%u^y1(!9a0
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "127.0.0.1",
     "hackthebookshelf.loca.lt",
 ]
 
