@@ -1,6 +1,6 @@
 package kz.nikitos.hackingthebookshelf.domain.data_sources
 
-import kz.nikitos.hackingthebookshelf.data.models.Event
+import kz.nikitos.hackingthebookshelf.domain.models.Event
 
 interface EventsDataSource {
     suspend fun getAllEvents(): List<Event>

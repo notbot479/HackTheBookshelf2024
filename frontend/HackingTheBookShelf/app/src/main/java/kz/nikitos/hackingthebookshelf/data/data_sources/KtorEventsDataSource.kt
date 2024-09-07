@@ -9,34 +9,44 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
-import kz.nikitos.hackingthebookshelf.data.models.Event
+import kz.nikitos.hackingthebookshelf.data.EventMapper
+import kz.nikitos.hackingthebookshelf.data.models.EventData
 import kz.nikitos.hackingthebookshelf.data.models.EventSubscripition
 import kz.nikitos.hackingthebookshelf.data.utils.BASE_URL
 import kz.nikitos.hackingthebookshelf.domain.data_sources.EventsDataSource
 import kz.nikitos.hackingthebookshelf.domain.data_sources.NotificationTokenStorage
+import kz.nikitos.hackingthebookshelf.domain.models.Event
 import kz.nikitos.hackingthebookshelf.domain.repositories.JWTTokenRepository
 import javax.inject.Inject
 
 class KtorEventsDataSource @Inject constructor(
     private val ktorClient: HttpClient,
     private val notificationTokenStorage: NotificationTokenStorage,
-    private val jwtTokenRepository: JWTTokenRepository
+    private val jwtTokenRepository: JWTTokenRepository,
+    private val eventMapper: EventMapper
 ) :
     EventsDataSource {
     override suspend fun getAllEvents(): List<Event> =
-        ktorClient.get(ALL_EVENTS_URL).body()
+        ktorClient
+            .get(ALL_EVENTS_URL)
+            .body<List<EventData>>()
+            .mapToDomain()
 
     override suspend fun getUpcomingEvents(): List<Event> =
-        ktorClient.get(UPCOMING_EVENTS_URL).body()
+        ktorClient.get(UPCOMING_EVENTS_URL).body<List<EventData>>()
+            .mapToDomain()
 
     override suspend fun getUpcomingTodayEvents(): List<Event> =
-        ktorClient.get(UPCOMING_TODAY_EVENTS_URL).body()
+        ktorClient.get(UPCOMING_TODAY_EVENTS_URL).body<List<EventData>>()
+            .mapToDomain()
 
     override suspend fun getStartedEvents(): List<Event> =
-        ktorClient.get(STARTED_EVENTS_URL).body()
+        ktorClient.get(STARTED_EVENTS_URL).body<List<EventData>>()
+            .mapToDomain()
 
     override suspend fun registerPossibleEvents(): List<Event> =
-        ktorClient.get(REGISTER_POSSIBLE_EVENTS_URL).body()
+        ktorClient.get(REGISTER_POSSIBLE_EVENTS_URL).body<List<EventData>>()
+            .mapToDomain()
 
     override suspend fun subscribeToEvent(eventId: Int) {
         val notificationToken = notificationTokenStorage.getToken()!!
@@ -49,6 +59,8 @@ class KtorEventsDataSource @Inject constructor(
             }
         }
     }
+
+    private fun List<EventData>.mapToDomain() = eventMapper(this)
 
     private companion object {
         const val BASE_EVENTS_URL = "$BASE_URL/events"

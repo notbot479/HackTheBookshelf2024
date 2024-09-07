@@ -9,10 +9,12 @@ import kz.nikitos.hackingthebookshelf.data.data_sources.InvalidCredentials
 import kz.nikitos.hackingthebookshelf.data.data_sources.KtorEventsDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.KtorTokenDataSource
 import kz.nikitos.hackingthebookshelf.data.repositories.MyJWTTokenRepository
+import kz.nikitos.hackingthebookshelf.domain.models.Event
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
+import kotlin.reflect.KSuspendFunction0
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -69,12 +71,31 @@ class ExampleInstrumentedTest {
         }
     }
 
+    private fun getEvents(getFunc: KSuspendFunction0<List<Event>>, funcName: String) {
+        runBlocking {
+            val events = getFunc()
+            Log.d(TAG, "$funcName: $events")
+        }
+    }
+
+    @Test
+    fun getUpcomingTodayEvents() {
+        getEvents(eventsDataSource::getUpcomingTodayEvents, "upcoming today")
+    }
+
     @Test
     fun getAllEvents() {
-        runBlocking {
-            val events = eventsDataSource.getAllEvents()
-            Log.d(TAG, "getAllEvents: $events")
-        }
+        getEvents(eventsDataSource::getAllEvents, "all")
+    }
+
+    @Test
+    fun getUpcomingEvents() {
+        getEvents(eventsDataSource::getUpcomingEvents, "upcoming")
+    }
+
+    @Test
+    fun getPastTodayEvents() {
+        getEvents(eventsDataSource::getStartedEvents, "past today")
     }
 
     @Test
