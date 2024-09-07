@@ -37,7 +37,7 @@ class Event(models.Model):
 
 
     def is_register_available(self) -> bool:
-        # NOTE also need update logic in view for register available events
+        # NOTE also need update logic in view and serializers
         now = timezone.now()
         start = self.start_time
         if not(start): return False
