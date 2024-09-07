@@ -26,6 +26,10 @@ class RegisterToEvent(APIView):
         except:
             data = {'error': f'Failed get event by id={event_id}'}
             return Response(data, status=status.HTTP_200_OK)
+        register = event.is_register_available()
+        if not(register):
+            data = {'error': f'Registration for current event unavailable'}
+            return Response(data, status=status.HTTP_200_OK)
         event.attendees.add(request.user)
         return Response({'status': True}, status=status.HTTP_200_OK)
 
