@@ -36,11 +36,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             HackingTheBookShelfTheme {
                 val navController = rememberNavController()
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
                         startDestination = LoginScreenDest,
-                        modifier = Modifier.padding(innerPadding)
+//                        modifier = Modifier.padding(innerPadding)
                     ) {
                         composable<LoginScreenDest> {
                             val viewModel = hiltViewModel<LoginViewModel>()
@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                             Text("Hello, world!")
                         }
                     }
-                }
+//                }
             }
         }
     }

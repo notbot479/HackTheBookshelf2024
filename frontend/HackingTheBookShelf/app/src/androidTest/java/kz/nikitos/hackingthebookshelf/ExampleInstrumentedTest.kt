@@ -103,10 +103,32 @@ class ExampleInstrumentedTest {
         runBlocking {
             tokenRepository.setCredentials("dio@heaven.jp", "777")
 
-            tokenRepository.getToken()
+            val token = tokenRepository.getToken()
+            Log.d(TAG, "subscribeToEvent: token is $token")
 
             val eventId = eventsDataSource.getAllEvents().random().id
             eventsDataSource.subscribeToEvent(eventId)
+            println("Hello, world!")
+        }
+    }
+
+    @Test
+    fun getMyEvents() {
+        runBlocking {
+            tokenRepository.setCredentials("dio@heaven.jp", "777")
+
+            val token = tokenRepository.getToken()
+        }
+        getEvents(eventsDataSource::getMySubscriptions, "my subscriptions")
+    }
+
+    @Test
+    fun unsubscribeEvent() {
+        runBlocking {
+            tokenRepository.setCredentials("dio@heaven.jp", "777")
+
+            val token = tokenRepository.getToken()
+            eventsDataSource.unsubscribeEvent(2)
         }
     }
 

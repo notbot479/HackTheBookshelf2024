@@ -2,12 +2,17 @@ package kz.nikitos.hackingthebookshelf.data.data_sources
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.append
+import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import kz.nikitos.hackingthebookshelf.data.EventMapper
 import kz.nikitos.hackingthebookshelf.data.models.EventData
@@ -49,13 +54,42 @@ class KtorEventsDataSource @Inject constructor(
             .mapToDomain()
 
     override suspend fun subscribeToEvent(eventId: Int) {
-        val notificationToken = notificationTokenStorage.getToken()!!
         val jwtToken = jwtTokenRepository.getToken()
         ktorClient.post(EVENT_SUBSCRIPTION_URL) {
+            expectSuccess = true
             contentType(ContentType.Application.Json)
-            setBody(EventSubscripition(notificationToken, eventId))
             headers {
-                append(HttpHeaders.Authorization, jwtToken)
+                append(HttpHeaders.Authorization, "Bearer $jwtToken")
+            }
+            url {
+                appendPathSegments("$eventId/")
+            }
+        }
+    }
+
+    override suspend fun getMySubscriptions(): List<Event>
+        {
+            val jwtToken = jwtTokenRepository.getToken()
+            return ktorClient
+                .get(GET_EVENTS_REGISTERED_ON) {
+                    headers {
+                        append(HttpHeaders.Authorization, "Bearer $jwtToken")
+                    }
+                }
+                .body<List<EventData>>()
+                .mapToDomain()
+        }
+
+    override suspend fun unsubscribeEvent(eventId: Int) {
+        val jwtToken = jwtTokenRepository.getToken()
+        ktorClient.delete(EVENT_SUBSCRIPTION_URL) {
+            expectSuccess = true
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer $jwtToken")
+            }
+            url {
+                appendPathSegments("$eventId/")
             }
         }
     }
@@ -70,7 +104,8 @@ class KtorEventsDataSource @Inject constructor(
         const val UPCOMING_TODAY_EVENTS_URL = "$BASE_EVENTS_URL/active-today/"
         const val STARTED_EVENTS_URL = "$BASE_EVENTS_URL/active-now/"
         const val REGISTER_POSSIBLE_EVENTS_URL = "$BASE_EVENTS_URL/register-available"
+        const val GET_EVENTS_REGISTERED_ON = "$BASE_EVENTS_URL/my/"
 
-        const val EVENT_SUBSCRIPTION_URL = "$BASE_EVENTS_URL/sub/"
+        const val EVENT_SUBSCRIPTION_URL = "$BASE_EVENTS_URL/register/"
     }
 }

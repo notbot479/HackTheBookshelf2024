@@ -9,4 +9,6 @@ interface EventsDataSource {
     suspend fun getStartedEvents(): List<Event>
     suspend fun registerPossibleEvents(): List<Event>
     suspend fun subscribeToEvent(eventId: Int)
+    suspend fun getMySubscriptions(): List<Event>
+    suspend fun unsubscribeEvent(eventId: Int)
 }

@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="frontend.HackingTheBookShelf.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-09-07T13:17:57.052202501Z">
+        <DropdownSelection timestamp="2024-09-07T15:09:11.356028772Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/home/yuto/.android/avd/Pixel_8_API_33.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=102702538V001494" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -30,10 +30,10 @@
       <SelectionState runConfigName="getUpcomingTodayEvents()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="getPastTodayEvents()">
+      <SelectionState runConfigName="getMyEvents()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="getUpcomingEvents()">
+      <SelectionState runConfigName="unsubscribeEvent()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
