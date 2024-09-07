@@ -13,4 +13,5 @@ urlpatterns = [
     path('jwt/', include('jwt_auth.urls')),
     path('events/', include('events.urls')),
     path('notifications/', include('notifications.urls')),
+    path('books/', include('books.urls')),
 ]
