@@ -7,16 +7,12 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.append
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
-import kz.nikitos.hackingthebookshelf.data.EventMapper
+import kz.nikitos.hackingthebookshelf.data.mappers.EventMapper
 import kz.nikitos.hackingthebookshelf.data.models.EventData
-import kz.nikitos.hackingthebookshelf.data.models.EventSubscripition
 import kz.nikitos.hackingthebookshelf.data.utils.BASE_URL
 import kz.nikitos.hackingthebookshelf.domain.data_sources.EventsDataSource
 import kz.nikitos.hackingthebookshelf.domain.data_sources.NotificationTokenStorage

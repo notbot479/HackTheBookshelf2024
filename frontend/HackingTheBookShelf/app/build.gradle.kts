@@ -99,6 +99,9 @@ dependencies {
     implementation(libs.hilt)
     implementation(libs.androidx.hilt)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
     kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)

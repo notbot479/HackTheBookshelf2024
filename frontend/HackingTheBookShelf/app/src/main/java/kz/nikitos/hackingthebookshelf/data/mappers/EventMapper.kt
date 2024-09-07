@@ -1,4 +1,4 @@
-package kz.nikitos.hackingthebookshelf.data
+package kz.nikitos.hackingthebookshelf.data.mappers
 
 import kz.nikitos.hackingthebookshelf.data.models.EventData
 import kz.nikitos.hackingthebookshelf.data.utils.TimestampToLocalDateTimeConverter
@@ -9,7 +9,9 @@ class EventMapper @Inject constructor(
     private val timestampToLocalDateTimeConverter: TimestampToLocalDateTimeConverter
 ) {
     operator fun invoke(events: List<EventData>): List<Event> =
-        events.map(::mapSingle)
+        events.map {
+            mapSingle(it)
+        }
 
     private fun mapSingle(event: EventData): Event {
         val eventStart = timestampToLocalDateTimeConverter.convert(event.startTime)
@@ -20,7 +22,7 @@ class EventMapper @Inject constructor(
             event.description,
             event.isRegisterAvailable,
             eventStart,
-            eventEnd
+            eventEnd,
         )
     }
 }

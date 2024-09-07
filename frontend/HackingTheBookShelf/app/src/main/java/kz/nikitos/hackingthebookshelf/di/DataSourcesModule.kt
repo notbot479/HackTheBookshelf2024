@@ -34,8 +34,15 @@ interface DataSourcesModule {
     ): UserCredentialsDataSource
 
     @Binds
+    @RealEventsDataSource
     fun getEventsDataSource(
         EventsDataSource: KtorEventsDataSource
+    ): EventsDataSource
+
+    @Binds
+    @FakeEventsDataSource
+    fun getFakeEventsDataSource(
+        eventsDataSource: kz.nikitos.hackingthebookshelf.data.data_sources.FakeEventsDataSource
     ): EventsDataSource
 
     @Binds
