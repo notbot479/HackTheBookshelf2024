@@ -8,6 +8,7 @@ from django.core.validators import (
 from django.db.models.signals import post_delete
 from django.contrib.auth.models import User
 from django.dispatch import receiver
+from django.utils import timezone
 from django.db import models
 from datetime import datetime
 
@@ -140,7 +141,9 @@ class BookDebt(models.Model):
         super().clean()
 
     def _validate_issue_and_deadline(self) -> None:
-        if self.date_of_deadline <= self.date_of_issue:
+        now = timezone.localtime()
+        issue = self.date_of_issue if self.date_of_issue else now.date()
+        if self.date_of_deadline <= issue:
             raise ValidationError('Invalid deadline date')
 
 

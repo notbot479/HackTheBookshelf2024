@@ -49,27 +49,27 @@ class Event(models.Model):
 
     def is_register_available(self) -> bool:
         # NOTE also need update logic in view and serializers
-        now = timezone.now()
+        now = timezone.localtime()
         start = self.start_time
         if not(start): return False
         return start > now and bool(self.is_registration_open)
 
     def is_active_now(self) -> bool:
-        now = timezone.now()
+        now = timezone.localtime()
         start = self.start_time
         end = self.end_time
         if not(start and end): return False
         return start <= now <= end
 
     def is_active_today(self) -> bool:
-        now = timezone.now()
+        now = timezone.localtime()
         start = self.start_time
         end = self.end_time
         if not(start and end): return False
         return start.date() <= now.date() <= end.date() #pyright: ignore
 
     def is_upcoming(self):
-        now = timezone.now()
+        now = timezone.localtime()
         start = self.start_time
         if not(start): return False
         return start > now

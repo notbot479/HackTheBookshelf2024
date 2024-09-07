@@ -26,5 +26,5 @@ class EventSerializer(serializers.ModelSerializer):
         return int(obj.end_time.timestamp())
 
     def get_is_register_available(self,obj) -> bool:
-        now = timezone.now()
+        now = timezone.localtime()
         return obj.start_time > now and bool(obj.is_registration_open)
