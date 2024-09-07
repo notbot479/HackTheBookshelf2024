@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
@@ -10,6 +11,10 @@ class Event(models.Model):
     
     def __str__(self) -> str:
         return str(self.name)
+
+    def clean(self):
+        self._validate_start_and_end_time()
+        return super().clean()
 
 
     name = models.CharField(
@@ -68,3 +73,8 @@ class Event(models.Model):
         start = self.start_time
         if not(start): return False
         return start > now
+
+    def _validate_start_and_end_time(self) -> None:
+        if self.start_time >= self.end_time:
+            message = 'Invalid event range. Please, check start_time and end_time'
+            raise ValidationError(message=message)
