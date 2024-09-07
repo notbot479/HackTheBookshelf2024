@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -32,8 +32,9 @@ def firebase_send_message(token:str, title:str, description:str) -> bool:
     except InvalidArgumentError:
         return False
 
-#TODO add staff only permission for current
+
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def send_notification(request):
     firebase_push_hash = request.GET.get('firebase_push_hash')
     title = request.GET.get('title','')
