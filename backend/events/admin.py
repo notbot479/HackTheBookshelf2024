@@ -17,6 +17,7 @@ class EventAdmin(admin.ModelAdmin):
     ordering = ('start_time',)
     search_fields = ('name', 'description')
     list_filter=('start_time', 'end_time')
+    filter_horizontal = ('attendees',)
 
 
     def is_register_available(self, obj) -> bool:

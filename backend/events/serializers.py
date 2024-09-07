@@ -11,7 +11,13 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        exclude = ['hidden','start_time','end_time', 'is_registration_open']
+        exclude = [
+            'hidden',
+            'start_time',
+            'end_time',
+            'is_registration_open',
+            'attendees',
+        ]
 
     def get_start_timestamp(self, obj) -> int:
         return int(obj.start_time.timestamp())

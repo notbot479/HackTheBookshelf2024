@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
 
@@ -24,6 +25,11 @@ class Event(models.Model):
     )
     end_time = models.DateTimeField(
         verbose_name='Время окончания',
+    )
+    attendees = models.ManyToManyField(
+        User,
+        verbose_name='Участники',
+        blank=True,
     )
     is_registration_open = models.BooleanField(
         verbose_name='Регистрация',

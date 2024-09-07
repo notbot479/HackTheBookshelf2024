@@ -9,4 +9,6 @@ urlpatterns = [
     path('active-today/', ActiveTodayEventsView.as_view(), name='active-today-events'),
     path('active-now/', ActiveNowEventsView.as_view(), name='active-now-events'),
     path('register-available/', RegisterAvailableEventsView.as_view(), name='register-available-events'),
+    path('register/<int:event_id>/', RegisterToEvent.as_view(), name='register-to-event'),
+    path('my/', UserEvents.as_view(), name='user-events'),
 ]
