@@ -128,6 +128,7 @@ class BookDebt(models.Model):
     )
 
     def clean(self):
+        self._validate_issue_and_deadline()
         # Only decrease count when creating a new debt record
         if self.pk is None:
             self._count_dump = int(self.count) #pyright: ignore
@@ -137,6 +138,10 @@ class BookDebt(models.Model):
         # rewrite books count 
         self.count = self._count_dump
         super().clean()
+
+    def _validate_issue_and_deadline(self) -> None:
+        if self.date_of_deadline <= self.date_of_issue:
+            raise ValidationError('Invalid deadline date')
 
 
 @receiver(post_delete, sender=BookDebt)
