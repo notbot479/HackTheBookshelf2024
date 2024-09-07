@@ -3,7 +3,6 @@ package kz.nikitos.hackingthebookshelf.di
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 import kz.nikitos.hackingthebookshelf.data.repositories.MyJWTTokenRepository
 import kz.nikitos.hackingthebookshelf.domain.repositories.JWTTokenRepository

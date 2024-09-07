@@ -100,9 +100,14 @@ class LibraryActivity : ComponentActivity() {
                     ) {
                         composable<NavigationDestination.EventsScreenDest> {
                             val viewModel = hiltViewModel<EventsViewModel>()
+
                             viewModel.getEvents()
-                            val events by viewModel.events.observeAsState()
-                            EventsScreen(events = events ?: emptyMap(), viewModel::registerOnEvent, modifier = Modifier.padding(horizontal = 6.dp))
+                            val allEvents by viewModel.allEvents.observeAsState(emptyMap())
+                            val subscribedEvents by viewModel.subscribedEvent.observeAsState(
+                                emptyList()
+                            )
+
+                            EventsScreen(allEvents = allEvents, subscribedEvents, viewModel::registerOnEvent, modifier = Modifier.padding(horizontal = 6.dp))
                         }
                         composable<NavigationDestination.BooksScreenDestination> {
                             Text(text = "Books screen")

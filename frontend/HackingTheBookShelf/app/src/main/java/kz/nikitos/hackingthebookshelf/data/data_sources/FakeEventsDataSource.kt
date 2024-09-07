@@ -88,7 +88,16 @@ class FakeEventsDataSource @Inject constructor() : EventsDataSource {
     }
 
     override suspend fun getMySubscriptions(): List<Event> {
-        return emptyList()
+        return listOf(
+            Event(
+                100500,
+                "100500",
+                "100500",
+                false,
+                LocalDateTime.of(2024, 9, 21, 0, 1),
+                LocalDateTime.of(2024, 9, 21, 0, 2)
+            )
+        )
     }
 
     override suspend fun unsubscribeEvent(eventId: Int) {

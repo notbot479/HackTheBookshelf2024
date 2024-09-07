@@ -19,22 +19,28 @@ typealias Events = Map<EventType, List<Event>>
 class EventsViewModel @Inject constructor(
     @FakeEventsDataSource private val eventsDataSource: EventsDataSource
 ) : ViewModel() {
-    private val _events = MutableLiveData<Events>()
-    val events: LiveData<Events> = _events
+    private val _allEvents = MutableLiveData<Events>()
+    val allEvents: LiveData<Events> = _allEvents
+
+    private val _subscribedEvents = MutableLiveData<List<Event>>()
+    val subscribedEvent: LiveData<List<Event>> = _subscribedEvents
 
     fun getEvents() {
         viewModelScope.launch {
             val upcoming = async { eventsDataSource.getUpcomingEvents() }
             val upcomingToday = async { eventsDataSource.getUpcomingTodayEvents() }
             val pastToday = async { eventsDataSource.getStartedEvents() }
+            val subscribedEvents = async { eventsDataSource.getMySubscriptions() }
 
-            _events.postValue(
+            _allEvents.postValue(
                 mapOf(
                     EventType.Upcoming to upcoming.await(),
                     EventType.UpcomingToday to upcomingToday.await(),
                     EventType.PastToday to pastToday.await()
                 )
             )
+
+            _subscribedEvents.postValue(subscribedEvents.await())
         }
     }
 
