@@ -17,6 +17,14 @@ SECRET_KEY = 'django-insecure-0q6tfven)e*o$rhf#ls@e-*rdt@#9eb&-r1iu=%i%u^y1(!9a0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+EMAIL_BACKEND = config.SMTP_EMAIL_BACKEND
+EMAIL_HOST = config.SMTP_EMAIL_HOST
+EMAIL_USE_TLS = config.SMTP_EMAIL_USE_TLS
+EMAIL_PORT = config.SMTP_EMAIL_PORT
+EMAIL_HOST_USER = config.SMTP_EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = config.SMTP_EMAIL_HOST_PASSWORD
+DEFAULT_FROM_EMAIL = config.SMTP_DEFAULT_FROM_EMAIL
+
 
 APPEND_SLASH = False
 
