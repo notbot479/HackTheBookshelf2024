@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0q6tfven)e*o$rhf#ls@e-*rdt@#9eb&-r1iu=%i%u^y1(!9a0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config.DEBUG
 
 EMAIL_BACKEND = config.SMTP_EMAIL_BACKEND
 EMAIL_HOST = config.SMTP_EMAIL_HOST
@@ -67,9 +67,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # my apps
     'jwt_auth',
     'events',
     'notifications',
+    'books',
 ]
 
 MIDDLEWARE = [

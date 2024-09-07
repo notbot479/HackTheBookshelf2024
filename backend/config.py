@@ -5,6 +5,7 @@ load_dotenv()
 
 
 #BASE
+DEBUG = True
 HOSTING = "hackthebookshelf.loca.lt"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
