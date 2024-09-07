@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'jwt_auth',
     'events',
+    'notifications',
 ]
 
 MIDDLEWARE = [
