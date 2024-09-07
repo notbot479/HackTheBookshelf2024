@@ -1,16 +1,17 @@
 package kz.nikitos.hackingthebookshelf
 
 import android.util.Log
-import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import kotlinx.coroutines.runBlocking
+import kz.nikitos.hackingthebookshelf.data.data_sources.DataStorageUserCredentialsDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.InvalidCredentials
+import kz.nikitos.hackingthebookshelf.data.data_sources.KtorEventsDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.KtorTokenDataSource
+import kz.nikitos.hackingthebookshelf.data.repositories.MyJWTTokenRepository
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import javax.inject.Inject
 
 /**
@@ -18,8 +19,6 @@ import javax.inject.Inject
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-private const val TAG = "TestingTag"
-//@RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class ExampleInstrumentedTest {
     @get:Rule
@@ -28,25 +27,69 @@ class ExampleInstrumentedTest {
     @Inject
     lateinit var tokenDataSource: KtorTokenDataSource
 
+    @Inject
+    lateinit var eventsDataSource: KtorEventsDataSource
+
+    @Inject
+    lateinit var tokenRepository: MyJWTTokenRepository
+
+    @Inject
+    lateinit var dataStorageUserCredentialsDataSource: DataStorageUserCredentialsDataSource
+
     @Before
     fun init() {
         hiltRule.inject()
     }
 
     @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("kz.nikitos.hackingthebookshelf", appContext.packageName)
-
+    fun registerOrLoggingInFailure() {
         runBlocking {
             val token = try {
-                tokenDataSource.getToken("nikitos9862@style.ru", "321")
+                tokenDataSource.getToken("morning_protection@terricon.kz", "6")
             } catch (e: InvalidCredentials) {
                 Log.e(TAG, "useAppContext: wrong credentials", e)
                 return@runBlocking
             }
+            assert(false)
             Log.i(TAG, "useAppContext: got token $token")
         }
+    }
+
+    @Test
+    fun registerOrLoggingInSuccess() {
+        runBlocking {
+            val token = try {
+                tokenDataSource.getToken("successfull@success.kz", "777")
+            } catch (e: InvalidCredentials) {
+                Log.e(TAG, "useAppContext: wrong credentials", e)
+                assert(false)
+                return@runBlocking
+            }
+            Log.i(TAG, "useAppContext: got token $token")
+        }
+    }
+
+    @Test
+    fun getAllEvents() {
+        runBlocking {
+            val events = eventsDataSource.getAllEvents()
+            Log.d(TAG, "getAllEvents: $events")
+        }
+    }
+
+    @Test
+    fun subscribeToEvent() {
+        runBlocking {
+            tokenRepository.setCredentials("dio@heaven.jp", "777")
+
+            tokenRepository.getToken()
+
+            val eventId = eventsDataSource.getAllEvents().random().id
+            eventsDataSource.subscribeToEvent(eventId)
+        }
+    }
+
+    private companion object {
+        const val TAG = "HackTheBookShelfTestingTag"
     }
 }

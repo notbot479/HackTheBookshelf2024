@@ -88,7 +88,17 @@ dependencies {
     implementation(libs.ktor.client.serialization.ktx.json)
     implementation(libs.ktor.client.content.negotiation)
 
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.navigation.compose)
+
+    implementation(libs.datastore.preferences)
+
+    implementation(libs.kotlinx.datetime)
+
     implementation(libs.hilt)
+    implementation(libs.androidx.hilt)
+    implementation(libs.androidx.runtime.livedata)
     kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)

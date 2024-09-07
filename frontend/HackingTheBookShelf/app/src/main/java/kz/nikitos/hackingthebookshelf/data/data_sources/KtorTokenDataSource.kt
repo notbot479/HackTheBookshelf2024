@@ -11,13 +11,16 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
-import kz.nikitos.hackingthebookshelf.domain.data_sources.TokenDataSource
+import kz.nikitos.hackingthebookshelf.data.utils.BASE_URL
+import kz.nikitos.hackingthebookshelf.domain.data_sources.RemoteTokenDataSource
 import javax.inject.Inject
 
 
-class KtorTokenDataSource @Inject constructor(private val ktorClient: HttpClient) : TokenDataSource {
+class KtorTokenDataSource @Inject constructor(
+    private val ktorClient: HttpClient
+) : RemoteTokenDataSource {
     override suspend fun getToken(username: String, password: String): String {
-        val response = ktorClient.post("$BASE_URL/jwt/get_token/") {
+        val response = ktorClient.post(TOKEN_URL) {
             contentType(ContentType.Application.Json)
             setBody(AuthData(username, password))
         }
@@ -27,8 +30,8 @@ class KtorTokenDataSource @Inject constructor(private val ktorClient: HttpClient
         }
     }
     private companion object {
-        const val BASE_URL = "https://hackthebookshelf.loca.lt"
-//        const val BASE_URL = "http://localhost:1234"
+        const val TOKEN_URL = "$BASE_URL/jwt/get_token/"
+        const val TAG = "HackTheBookShelfKtorDataSource"
     }
 }
 

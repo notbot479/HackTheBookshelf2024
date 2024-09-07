@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,11 +13,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.Serializable
+import kz.nikitos.hackingthebookshelf.ui.LoginViewModel
+import kz.nikitos.hackingthebookshelf.ui.composables.LoginScreen
 import kz.nikitos.hackingthebookshelf.ui.theme.HackingTheBookShelfTheme
 
 @AndroidEntryPoint
@@ -27,11 +35,29 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HackingTheBookShelfTheme {
+                val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    NavHost(
+                        navController = navController,
+                        startDestination = LoginScreenDest,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        composable<LoginScreenDest> {
+                            val viewModel = hiltViewModel<LoginViewModel>()
+                            val loginState by viewModel.uiState.observeAsState()
+                                LoginScreen(
+                                    loginState = loginState,
+                                    onValueChange = viewModel::updateCredentials,
+                                    onLogin = viewModel::login,
+                                    onLoggedIn = {
+                                        navController.navigate(MainScreen)
+                                    }
+                                )
+                        }
+                        composable<MainScreen> {
+                            Text("Hello, world!")
+                        }
+                    }
                 }
             }
         }
@@ -40,10 +66,8 @@ class MainActivity : ComponentActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
-        if (isGranted) {
-            // FCM SDK (and your app) can post notifications.
-        } else {
-            // TODO: Inform user that that your app will not show notifications.
+        if (!isGranted) {
+            onNotificationsNotAllowed()
         }
     }
 
@@ -55,30 +79,27 @@ class MainActivity : ComponentActivity() {
             ) {
                 // FCM SDK (and your app) can post notifications.
             } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
+                onNotificationsNotAllowed()
             } else {
                 // Directly ask for the permission
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HackingTheBookShelfTheme {
-        Greeting("Android")
+    private fun onNotificationsNotAllowed() {
+        Toast.makeText(this, "Notifications are not allowed", Toast.LENGTH_LONG).show()
     }
 }
+
+@Serializable
+object LoginScreenDest
+//data class LoginScreenDest(
+//    val username: String?,
+//    val password: String?,
+//    val loginErrorMessage: String?,
+//    val passwordErrorMessage: String?
+//)
+
+@Serializable
+object MainScreen
