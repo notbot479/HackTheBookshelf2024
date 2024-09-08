@@ -43,6 +43,7 @@ class Event(models.Model):
     send_push = models.BooleanField(
         verbose_name='Отправить push',
         default=False, #pyright: ignore
+        help_text='Для скрытых мероприятий push уведомления отключены'
     )
     attendees = models.ManyToManyField(
         User,
@@ -90,7 +91,7 @@ class Event(models.Model):
     def _send_message_to_users(self) -> None:
         title = f'Ура! Появилось новое мероприятие! {self.name}.'
         description = str(self.description)
-        if not(self.send_push): return
+        if not(self.send_push) or self.hidden: return
         users = UserNotification.objects.all() #pyright: ignore
         logging.warning(f'Send push messages, users count: {len(users)}')
         for user in users:
