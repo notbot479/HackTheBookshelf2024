@@ -55,7 +55,7 @@ fun LoginScreen(
                 onValueChange(UserCredentials(it, password))
             },
             label = {
-                Text(text = "username")
+                Text(text = "Электронная почта")
             },
             singleLine = true,
             isError = isUsernameError,
@@ -76,7 +76,7 @@ fun LoginScreen(
                 onValueChange(UserCredentials(username, it))
             },
             label = {
-                Text(text = "password")
+                Text(text = "Пароль")
             },
             singleLine = true,
             supportingText = {
@@ -100,7 +100,7 @@ fun LoginScreen(
         }
 
         Button(onClick = onLogin) {
-            Text(text = "Login")
+            Text(text = "Войти")
         }
     }
 }

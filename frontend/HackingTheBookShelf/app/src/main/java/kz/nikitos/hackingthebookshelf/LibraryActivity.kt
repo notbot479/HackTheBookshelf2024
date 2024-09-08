@@ -51,19 +51,19 @@ class LibraryActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val bottomNavigationItems = listOf(
                     BottomNavigationItem(
-                        "Events",
+                        "Мероприятия",
                         Icons.Filled.DateRange,
                         Icons.Outlined.DateRange,
                         NavigationDestination.EventsScreenDest
                     ),
                     BottomNavigationItem(
-                        "Books",
+                        "Книги",
                         Icons.Sharp.Notifications,
                         Icons.Outlined.Notifications,
                         NavigationDestination.BooksScreenDestination
                     ),
                     BottomNavigationItem(
-                        "Achievements",
+                        "Достижения",
                         Icons.Filled.AccountBox,
                         Icons.Outlined.AccountBox,
                         NavigationDestination.AchievmentsScreenDestination

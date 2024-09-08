@@ -15,7 +15,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.format
+import kotlinx.datetime.toJavaLocalDate
 import kz.nikitos.hackingthebookshelf.data.models.DebtData
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun BooksScreen(books: List<DebtData>, onRegisterBookToRemindToReturn: (book: DebtData) -> Unit, modifier: Modifier = Modifier) {
@@ -28,6 +31,7 @@ fun BooksScreen(books: List<DebtData>, onRegisterBookToRemindToReturn: (book: De
 
 @Composable
 fun BookCard(book: DebtData, onRegisterBookToRemindToReturn: (debtData: DebtData) -> Unit) {
+    val dateFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy: EEEE")
     var isExpanded by rememberSaveable {
         mutableStateOf(false)
     }
@@ -38,7 +42,7 @@ fun BookCard(book: DebtData, onRegisterBookToRemindToReturn: (debtData: DebtData
 
         Text(text = "Взята: ${book.dateOfIssue}")
 
-        Text(text = "Необходимо вернуть до: ${book.dateOfDeadline}")
+        Text(text = "Необходимо вернуть до: ${book.dateOfDeadline.toJavaLocalDate().format(dateFormatter)}")
 
         Text(text = "Взято экземпляров: ${book.available}")
         
