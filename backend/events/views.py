@@ -1,5 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import status
@@ -7,6 +8,14 @@ from django.utils import timezone
 
 from .serializers import EventSerializer
 from .models import Event
+
+from reward_system.models import UserRewardCouter
+
+
+def increase_event_counter(user: User, value:int=1) -> None:
+    rc,_ = UserRewardCouter.objects.get_or_create(user=user) #pyright: ignore
+    rc.event_counter += value
+    rc.save()
 
 class UserEvents(generics.ListAPIView):
     serializer_class = EventSerializer
@@ -21,6 +30,7 @@ class RegisterToEvent(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, event_id:int):
+        user = request.user
         try:
             event = Event.objects.get(id=event_id) #pyright: ignore
         except:
@@ -30,7 +40,12 @@ class RegisterToEvent(APIView):
         if not(register):
             data = {'error': f'Registration for current event unavailable'}
             return Response(data, status=status.HTTP_200_OK)
-        event.attendees.add(request.user)
+        already_registered = event.attendees.filter(id=user.id).exists() #pyright: ignore
+        if already_registered:
+            data = {'error': f'You already registered for current event'}
+            return Response(data, status=status.HTTP_200_OK)
+        increase_event_counter(user=user)
+        event.attendees.add(user)
         return Response({'status': True}, status=status.HTTP_200_OK)
 
     def delete(self, request, event_id:int):

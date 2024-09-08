@@ -12,6 +12,8 @@ from django.utils import timezone
 from django.db import models
 from datetime import datetime
 
+from reward_system.models import UserRewardCouter
+
 
 CERTIFICATE_NUMBER_LEN = 8
 
@@ -147,6 +149,12 @@ class BookDebt(models.Model):
             raise ValidationError('Invalid deadline date')
 
 
+def increase_books_recovered(user: User, value:int) -> None:
+    rc,_ = UserRewardCouter.objects.get_or_create(user=user) #pyright: ignore
+    rc.books_recovered += value
+    rc.save()
+
 @receiver(post_delete, sender=BookDebt)
 def bookdebt_post_delete(sender, instance, **kwargs): #pyright: ignore
+    increase_books_recovered(user=instance.user, value=instance.count)
     instance.book.increase_count(value=instance.count)

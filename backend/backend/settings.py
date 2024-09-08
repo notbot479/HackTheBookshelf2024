@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'events',
     'notifications',
     'books',
+    'reward_system',
 ]
 
 MIDDLEWARE = [
