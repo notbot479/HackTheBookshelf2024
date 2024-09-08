@@ -2,6 +2,10 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
+import logging
+
+from notifications.views import firebase_send_message
+from notifications.models import UserNotification
 
 
 class Event(models.Model):
@@ -12,10 +16,13 @@ class Event(models.Model):
     def __str__(self) -> str:
         return str(self.name)
 
+    def save(self, *args, **kwargs):
+        self._send_message_to_users()
+        super().save(*args,**kwargs)
+
     def clean(self):
         self._validate_start_and_end_time()
         return super().clean()
-
 
     name = models.CharField(
         verbose_name='Название',
@@ -30,6 +37,11 @@ class Event(models.Model):
     )
     end_time = models.DateTimeField(
         verbose_name='Время окончания',
+    )
+    send_push = models.BooleanField(
+        verbose_name='Отправить push',
+        default=False, #pyright: ignore
+        help_text='Только при создании мероприятия. Для тех, кто подписан на уведомления.'
     )
     attendees = models.ManyToManyField(
         User,
@@ -73,6 +85,19 @@ class Event(models.Model):
         start = self.start_time
         if not(start): return False
         return start > now
+
+    def _send_message_to_users(self) -> None:
+        title = f'Ура! Появилось новое мероприятие! {self.name}.'
+        description = str(self.description)
+        if not(self.pk is None and self.send_push): return
+        users = UserNotification.objects.all() #pyright: ignore
+        logging.warning(f'Send push messages, users count: {len(users)}')
+        for user in users:
+            firebase_send_message(
+                token=user.firebase_push_hash,
+                title=title,
+                description=description,
+            )
 
     def _validate_start_and_end_time(self) -> None:
         if self.start_time >= self.end_time:
