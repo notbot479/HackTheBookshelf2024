@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db import models
 from typing import Iterator
+import logging
 
 from notifications.views import firebase_send_message
 from notifications.models import UserNotification
@@ -12,9 +13,12 @@ def create_new_achievement(user: User, name:str) -> None:
     UserAchievement.objects.get_or_create(user=user,name=name) #pyright: ignore
 
 def get_firebase_token_by_user(user: User) -> str | None:
-    token = UserNotification.objects.get(user=user) #pyright: ignore
-    if not(token): return None
-    return token
+    try:
+        un = UserNotification.objects.get(user=user) #pyright: ignore
+        if not(un): return None
+    except:
+        return None
+    return un.firebase_push_hash
 
 def counter_reward(old, new, attribute: str, *, k: int) -> Iterator:
     k1 = (getattr(old, attribute) // k) + 1
@@ -62,7 +66,9 @@ def event_counter_reward(old, new, *, k:int=5) -> None:
         token = get_firebase_token_by_user(user=new.user)
         if not(token): continue
         title = 'Congratulations! New achievement received.'
-        firebase_send_message(token=token,title=title,description=name)
+        ok = firebase_send_message(token=token,title=title,description=name)
+        if not(ok): return
+        logging.warning(f'Send achievement(event_counter {stage}) push to user {new.user}')
 
 def books_counter_reward(old, new, *, k:int=10) -> None:
     for stage in counter_reward(old=old,new=new,attribute='books_recovered',k=k):
@@ -71,8 +77,9 @@ def books_counter_reward(old, new, *, k:int=10) -> None:
         token = get_firebase_token_by_user(user=new.user)
         if not(token): continue
         title = 'Congratulations! New achievement received.'
-        firebase_send_message(token=token,title=title,description=name)
-
+        ok = firebase_send_message(token=token,title=title,description=name)
+        if not(ok): return
+        logging.warning(f'Send achievement(books_recovered {stage}) push to user {new.user}')
 
 @receiver(pre_save, sender=UserRewardCouter)
 def compare_old_new_data(sender, instance, **kwargs): #pyright: ignore

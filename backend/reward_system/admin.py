@@ -14,4 +14,4 @@ class UserAchievementAdmin(admin.ModelAdmin):
     list_display = ('user', 'name', 'created_at')
     search_fields = ('user__username', 'name')
     list_filter = ('created_at',)
-    ordering = ('created_at',)
+    ordering = ('-created_at',)
