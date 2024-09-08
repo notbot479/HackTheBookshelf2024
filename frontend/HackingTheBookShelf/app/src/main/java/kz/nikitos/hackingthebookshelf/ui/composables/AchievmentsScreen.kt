@@ -12,7 +12,7 @@ import kz.nikitos.hackingthebookshelf.domain.models.Achievment
 fun AchievmentsScreen(achievments: List<Achievment>, modifier: Modifier = Modifier) {
     LazyColumn {
         items(achievments) { achievment ->
-
+            AchievmentCard(achievment)
         }
     }
 }

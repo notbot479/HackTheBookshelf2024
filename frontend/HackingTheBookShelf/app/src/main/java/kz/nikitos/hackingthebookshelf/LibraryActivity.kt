@@ -112,9 +112,9 @@ class LibraryActivity : ComponentActivity() {
                             if (errorMessage.isNotEmpty()) {
                                 Toast.makeText(this@LibraryActivity, errorMessage, Toast.LENGTH_LONG).show()
                             }
-//                            LaunchedEffect(key1 = Unit) {
+                            LaunchedEffect(key1 = Unit) {
                                 viewModel.getEvents()
-//                            }
+                            }
                             val allEvents by viewModel.allEvents.observeAsState(emptyMap())
                             val subscribedEvents by viewModel.subscribedEvent.observeAsState(emptyList())
 
@@ -122,10 +122,8 @@ class LibraryActivity : ComponentActivity() {
                         }
                         composable<NavigationDestination.BooksScreenDestination> {
                             val viewModel = hiltViewModel<BooksViewModel>()
-                            try {
+                            LaunchedEffect(key1 = Unit) {
                                 viewModel.getBooks()
-                            } catch (e: Throwable) {
-                                Toast.makeText(this@LibraryActivity, "Something is wrong with request or internet", Toast.LENGTH_LONG).show()
                             }
                             val books by viewModel.books.observeAsState(emptyList())
                             BooksScreen(books = books, viewModel::registerReminder)
@@ -133,6 +131,9 @@ class LibraryActivity : ComponentActivity() {
                         composable<NavigationDestination.AchievmentsScreenDestination> {
                             val viewModel = hiltViewModel<AchievmentsViewModel>()
                             val achievments by viewModel.achievments.observeAsState(emptyList())
+                            LaunchedEffect(key1 = Unit) {
+                                viewModel.getAchievments()
+                            }
                             AchievmentsScreen(achievments)
                         }
                     }

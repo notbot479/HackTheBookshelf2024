@@ -69,8 +69,6 @@ class LoginViewModel @Inject constructor(
                 if (usernameIsEmpty) {
                     Log.i(TAG, "login: username was empty")
                     usernameErrorMessage = "Empty username"
-                } else if (emailValidator(userCredentials.username)) {
-                    usernameErrorMessage = "Invalid email"
                 }
 
                 var passwordErrorMessage: String? = null

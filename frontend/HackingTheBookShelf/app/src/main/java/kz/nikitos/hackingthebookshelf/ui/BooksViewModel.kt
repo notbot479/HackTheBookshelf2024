@@ -24,12 +24,12 @@ class BooksViewModel @Inject constructor(
     val books: LiveData<List<DebtData>> = _books
 
     fun getBooks() {
-//        viewModelScope.launch {
-//            _books.postValue(booksDataSource.getDebtBooks())
-//        }
-        _books.postValue(listOf(
-            DebtData(BookData(1, "title", "author", "202020", 2024, 3, 3), 3, LocalDate(2024, 12, 12), LocalDate(2024, 12, 13))
-        ))
+        viewModelScope.launch {
+            _books.postValue(booksDataSource.getDebtBooks())
+        }
+//        _books.postValue(listOf(
+//            DebtData(BookData(1, "title", "author", "202020", 2024, 3, 3), 3, LocalDate(2024, 12, 12), LocalDate(2024, 12, 13))
+//        ))
     }
 
     fun registerReminder(book: DebtData) {

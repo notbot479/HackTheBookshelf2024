@@ -1,5 +1,6 @@
 package kz.nikitos.hackingthebookshelf.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +20,13 @@ class AchievmentsViewModel @Inject constructor(
 
     fun getAchievments() {
         viewModelScope.launch {
-            _achievments.postValue(achievmentsDataSource.getAllAchievments())
+            val reachedAchievements = achievmentsDataSource.getAllAchievments()
+            Log.d(TAG, "getAchievments: $reachedAchievements")
+            _achievments.postValue(reachedAchievements)
         }
+    }
+
+    companion object {
+        private const val TAG = "Hack"
     }
 }

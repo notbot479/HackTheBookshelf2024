@@ -26,6 +26,6 @@ class KtorAchievmentsDataSource @Inject constructor(
     }
 
     private companion object {
-        const val ACHIEVMENTS_URL = "$BASE_URL/"
+        const val ACHIEVMENTS_URL = "$BASE_URL/achievements/my/"
     }
 }
