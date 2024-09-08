@@ -18,6 +18,8 @@ class Event(models.Model):
 
     def save(self, *args, **kwargs):
         self._send_message_to_users()
+        # reset send push flag
+        self.send_push = False
         super().save(*args,**kwargs)
 
     def clean(self):
@@ -41,7 +43,6 @@ class Event(models.Model):
     send_push = models.BooleanField(
         verbose_name='Отправить push',
         default=False, #pyright: ignore
-        help_text='Только при создании мероприятия. Для тех, кто подписан на уведомления.'
     )
     attendees = models.ManyToManyField(
         User,
@@ -89,7 +90,7 @@ class Event(models.Model):
     def _send_message_to_users(self) -> None:
         title = f'Ура! Появилось новое мероприятие! {self.name}.'
         description = str(self.description)
-        if not(self.pk is None and self.send_push): return
+        if not(self.send_push): return
         users = UserNotification.objects.all() #pyright: ignore
         logging.warning(f'Send push messages, users count: {len(users)}')
         for user in users:
