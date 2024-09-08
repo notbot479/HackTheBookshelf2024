@@ -36,18 +36,19 @@ fun EventsScreen(
     allEvents: Events,
     subscribedEvents: List<Event>,
     onRegistration: ((event: Event) -> Unit)?,
+    onUnsubscribe: ((event: Event) -> Unit)?,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(pageCount = { EVENTS_SCREEN_PAGES })
-    val composableScope = rememberCoroutineScope()
 
     val pages = listOf<@Composable () -> Unit>(
-        { AllEvents(events = allEvents, onRegistration = onRegistration, modifier = modifier) },
+        { AllEvents(events = allEvents, onRegistration = onRegistration, "Зарегистрироваться", modifier = modifier) },
         {
             EventsList(
                 events = subscribedEvents,
                 listTitle = "Мероприятия, где вы принимали участия",
-                onRegistration = null
+                onUnsubscribe,
+                "Отписаться",
             )
         }
     )
@@ -74,7 +75,7 @@ fun EventsScreen(
 }
 
 @Composable
-fun AllEvents(events: Events, onRegistration: ((event: Event) -> Unit)?, modifier: Modifier) {
+fun AllEvents(events: Events, onRegistration: ((event: Event) -> Unit)?, buttonLabel: String, modifier: Modifier) {
     val upcomingToday = events[EventType.UpcomingToday]
     val upcoming = events[EventType.Upcoming]
     val pastToday = events[EventType.PastToday]
@@ -89,7 +90,7 @@ fun AllEvents(events: Events, onRegistration: ((event: Event) -> Unit)?, modifie
             Text(text = bundle.title)
             Column {
                 bundle.events?.forEach {
-                    EventCard(event = it, onRegistration)
+                    EventCard(event = it, onRegistration, buttonLabel)
                 }
             }
         }
@@ -101,20 +102,21 @@ fun EventsList(
     events: List<Event>?,
     listTitle: String,
     onRegistration: ((event: Event) -> Unit)?,
-    modifier: Modifier = Modifier
+    buttonLabel: String,
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = modifier) {
         item {
             Text(text = listTitle, fontWeight = FontWeight.ExtraBold)
         }
         items(events ?: emptyList()) { event ->
-            EventCard(event, onRegistration)
+            EventCard(event, onRegistration, buttonLabel)
         }
     }
 }
 
 @Composable
-fun EventCard(event: Event, onRegistration: ((event: Event) -> Unit)?) {
+fun EventCard(event: Event, onRegistration: ((event: Event) -> Unit)?, buttonLabel: String) {
     val dateFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy: EEEE HH:mm")
     var isExpanded by rememberSaveable {
         mutableStateOf(false)
@@ -147,7 +149,7 @@ fun EventCard(event: Event, onRegistration: ((event: Event) -> Unit)?) {
                 onClick = { onRegistration?.invoke(event) },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(text = "Зарегистрироваться")
+                Text(text = buttonLabel)
             }
         }
     }

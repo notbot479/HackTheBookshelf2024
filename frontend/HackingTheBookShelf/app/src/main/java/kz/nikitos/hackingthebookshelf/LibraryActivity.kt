@@ -118,7 +118,7 @@ class LibraryActivity : ComponentActivity() {
                             val allEvents by viewModel.allEvents.observeAsState(emptyMap())
                             val subscribedEvents by viewModel.subscribedEvent.observeAsState(emptyList())
 
-                            EventsScreen(allEvents = allEvents, subscribedEvents, viewModel::registerOnEvent, modifier = Modifier.padding(horizontal = 6.dp))
+                            EventsScreen(allEvents = allEvents, subscribedEvents, viewModel::registerOnEvent, viewModel::unsubscribeEvent, modifier = Modifier.padding(horizontal = 6.dp))
                         }
                         composable<NavigationDestination.BooksScreenDestination> {
                             val viewModel = hiltViewModel<BooksViewModel>()

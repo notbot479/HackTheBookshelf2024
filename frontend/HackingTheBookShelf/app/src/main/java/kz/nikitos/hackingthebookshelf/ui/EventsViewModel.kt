@@ -59,4 +59,10 @@ class EventsViewModel @Inject constructor(
             subscribeToEvent(event)
         }
     }
+
+    fun unsubscribeEvent(event: Event) {
+        viewModelScope.launch {
+            eventsDataSource.unsubscribeEvent(event.id)
+        }
+    }
 }

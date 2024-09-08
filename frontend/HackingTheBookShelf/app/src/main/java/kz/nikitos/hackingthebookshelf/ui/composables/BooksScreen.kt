@@ -35,6 +35,8 @@ fun BookCard(book: DebtData, onRegisterBookToRemindToReturn: (debtData: DebtData
         Text(text = "Взята: ${book.dateOfIssue}")
 
         Text(text = "Необходимо вернуть до: ${book.dateOfDeadline}")
+
+        Text(text = "Взято экземпляров: ${book.available}")
         
         if (isExpanded) {
             Text(text = "Количество илюстраций: ${book.bookData.images}")
