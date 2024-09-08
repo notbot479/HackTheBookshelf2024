@@ -1,5 +1,8 @@
 package kz.nikitos.hackingthebookshelf.ui.composables
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -11,11 +14,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import kz.nikitos.hackingthebookshelf.data.models.DebtData
 
 @Composable
 fun BooksScreen(books: List<DebtData>, onRegisterBookToRemindToReturn: (book: DebtData) -> Unit, modifier: Modifier = Modifier) {
-    LazyColumn(modifier) {
+    LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp), contentPadding = PaddingValues(8.dp)) {
         items(books) { book ->
             BookCard(book, onRegisterBookToRemindToReturn)
         }
@@ -27,7 +31,7 @@ fun BookCard(book: DebtData, onRegisterBookToRemindToReturn: (debtData: DebtData
     var isExpanded by rememberSaveable {
         mutableStateOf(false)
     }
-    ElevatedCard(onClick = { isExpanded = !isExpanded }) {
+    ElevatedCard(onClick = { isExpanded = !isExpanded }, modifier = Modifier.fillMaxWidth()) {
         Text(text = "${book.bookData.author}: ${book.bookData.title}")
 
         Text(text = "Страниц: ${book.bookData.pages}")

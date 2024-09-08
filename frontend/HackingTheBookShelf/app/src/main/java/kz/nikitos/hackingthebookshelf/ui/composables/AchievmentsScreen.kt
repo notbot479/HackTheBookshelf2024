@@ -1,6 +1,7 @@
 package kz.nikitos.hackingthebookshelf.ui.composables
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.OutlinedCard
@@ -14,7 +15,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun AchievmentsScreen(achievments: List<Achievment>, modifier: Modifier = Modifier) {
-    LazyColumn {
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(8.dp)) {
         items(achievments) { achievment ->
             AchievmentCard(achievment)
         }
@@ -26,7 +27,7 @@ fun AchievmentCard(achievment: Achievment) {
     val timestampToLocalDateTimeConverter = TimestampToLocalDateTimeConverter()
     val dateFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy: EEEE HH:mm")
     val achievedDate = timestampToLocalDateTimeConverter.convert(achievment.createdAt)
-    OutlinedCard(onClick = { /*TODO*/ }, modifier = Modifier.padding(top = 16.dp)) {
+    OutlinedCard(onClick = { /*TODO*/ }) {
         Text(text = achievment.title)
         Text(text = "Дата получения: ${achievedDate.format(dateFormatter)}")
     }

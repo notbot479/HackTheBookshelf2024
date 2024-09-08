@@ -3,6 +3,7 @@ package kz.nikitos.hackingthebookshelf.ui.composables
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -85,10 +86,10 @@ fun AllEvents(events: Events, onRegistration: ((event: Event) -> Unit)?, buttonL
         EventBundle(upcoming, "Предстоящие мероприятия"),
         EventBundle(pastToday, "Идущие мероприятия")
     )
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(8.dp)) {
         items(eventBundle) { bundle ->
             Text(text = bundle.title)
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 bundle.events?.forEach {
                     EventCard(event = it, onRegistration, buttonLabel)
                 }
