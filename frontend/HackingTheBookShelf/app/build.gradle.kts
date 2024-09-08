@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.dagger.hilt)
+    id("kotlin-kapt")
 }
 
 val keyStoreProperties = Properties()
@@ -27,7 +29,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "kz.nikitos.hackingthebookshelf.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -83,6 +85,24 @@ dependencies {
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.serialization.ktx.json)
+    implementation(libs.ktor.client.content.negotiation)
+
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.navigation.compose)
+
+    implementation(libs.datastore.preferences)
+
+    implementation(libs.kotlinx.datetime)
+
+    implementation(libs.hilt)
+    implementation(libs.androidx.hilt)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -91,4 +111,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    androidTestImplementation(libs.hilt.testing)
+    kaptAndroidTest(libs.hilt.compiler)
 }

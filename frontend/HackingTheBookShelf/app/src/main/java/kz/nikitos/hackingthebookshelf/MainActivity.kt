@@ -1,9 +1,11 @@
 package kz.nikitos.hackingthebookshelf
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,23 +13,46 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kz.nikitos.hackingthebookshelf.domain.repositories.JWTTokenRepository
+import kz.nikitos.hackingthebookshelf.ui.LoginState
+import kz.nikitos.hackingthebookshelf.ui.LoginViewModel
+import kz.nikitos.hackingthebookshelf.ui.composables.LoginScreen
 import kz.nikitos.hackingthebookshelf.ui.theme.HackingTheBookShelfTheme
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var jwtTokenRepository: JWTTokenRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         askNotificationPermission()
+
+        if (alreadyAuthorised()) goToLibraryActivity()
+
         enableEdgeToEdge()
+
         setContent {
             HackingTheBookShelfTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    val viewModel = hiltViewModel<LoginViewModel>()
+                    val loginState by viewModel.uiState.observeAsState(LoginState())
+                    LoginScreen(
+                        loginState = loginState,
+                        onValueChange = viewModel::updateCredentials,
+                        onLogin = viewModel::login,
+                        onLoggedIn = ::goToLibraryActivity,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -38,45 +63,41 @@ class MainActivity : ComponentActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
-        if (isGranted) {
-            // FCM SDK (and your app) can post notifications.
-        } else {
-            // TODO: Inform user that that your app will not show notifications.
+        if (!isGranted) {
+            onNotificationsNotAllowed()
         }
     }
 
     private fun askNotificationPermission() {
-        // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
-            ) {
-                // FCM SDK (and your app) can post notifications.
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
+            ) { } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                onNotificationsNotAllowed()
             } else {
-                // Directly ask for the permission
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun onNotificationsNotAllowed() {
+        Toast.makeText(this, "Notifications are not allowed", Toast.LENGTH_LONG).show()
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HackingTheBookShelfTheme {
-        Greeting("Android")
+    private fun alreadyAuthorised(): Boolean = runBlocking {
+            try {
+                jwtTokenRepository.getToken()
+                return@runBlocking true
+            } catch (e: Exception) {
+                return@runBlocking false
+            }
+        }
+
+    private fun goToLibraryActivity() {
+        val goToLibraryActivity = Intent(this, LibraryActivity::class.java)
+        goToLibraryActivity.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+        startActivity(goToLibraryActivity)
+        this.finish()
     }
 }
