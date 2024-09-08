@@ -14,4 +14,5 @@ urlpatterns = [
     path('events/', include('events.urls')),
     path('notifications/', include('notifications.urls')),
     path('books/', include('books.urls')),
+    path('achievements/', include('reward_system.urls')),
 ]
