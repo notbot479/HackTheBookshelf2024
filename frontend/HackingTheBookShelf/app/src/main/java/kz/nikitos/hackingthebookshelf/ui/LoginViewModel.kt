@@ -11,12 +11,14 @@ import kz.nikitos.hackingthebookshelf.data.data_sources.InvalidCredentials
 import kz.nikitos.hackingthebookshelf.data.models.UserCredentials
 import kz.nikitos.hackingthebookshelf.domain.data_sources.UserCredentialsDataSource
 import kz.nikitos.hackingthebookshelf.domain.repositories.JWTTokenRepository
+import kz.nikitos.hackingthebookshelf.domain.use_cases.EmailValidator
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val jwtTokenRepository: JWTTokenRepository,
     private val userCredentialsDataSource: UserCredentialsDataSource,
+    private val emailValidator: EmailValidator
 ) : ViewModel() {
 
     private val _token = MutableLiveData<String>()
@@ -67,6 +69,8 @@ class LoginViewModel @Inject constructor(
                 if (usernameIsEmpty) {
                     Log.i(TAG, "login: username was empty")
                     usernameErrorMessage = "Empty username"
+                } else if (emailValidator(userCredentials.username)) {
+                    usernameErrorMessage = "Invalid email"
                 }
 
                 var passwordErrorMessage: String? = null

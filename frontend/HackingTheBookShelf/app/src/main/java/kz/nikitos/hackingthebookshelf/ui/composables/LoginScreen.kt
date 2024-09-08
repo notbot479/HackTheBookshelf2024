@@ -16,18 +16,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import kz.nikitos.hackingthebookshelf.data.models.UserCredentials
 import kz.nikitos.hackingthebookshelf.ui.LoginState
 
 @Composable
 fun LoginScreen(
-    loginState: LoginState?,
+    loginState: LoginState,
     onValueChange: (userCredentials: UserCredentials) -> Unit,
     onLogin: () -> Unit,
     onLoggedIn: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (loginState?.loginSucceeded == true) {
+    if (loginState.loginSucceeded) {
         onLoggedIn()
     }
 
@@ -39,8 +40,8 @@ fun LoginScreen(
         mutableStateOf("")
     }
 
-    val isUsernameError = loginState?.usernameError != null
-    val isPasswordError = loginState?.passwordError != null
+    val isUsernameError = loginState.usernameError != null
+    val isPasswordError = loginState.passwordError != null
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -62,7 +63,7 @@ fun LoginScreen(
                 if (isUsernameError) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = loginState!!.usernameError!!,
+                        text = loginState.usernameError!!,
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -82,18 +83,19 @@ fun LoginScreen(
                 if (isPasswordError) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = loginState!!.passwordError!!,
+                        text = loginState.passwordError!!,
                         color = MaterialTheme.colorScheme.error
                     )
                 }
-            }
+            },
+            visualTransformation = PasswordVisualTransformation()
         )
 
-        loginState?.generalError?.let { generalError ->
+        loginState.generalError?.let { generalError ->
             Text(text = generalError, color = MaterialTheme.colorScheme.error)
         }
 
-        if (loginState?.isProcessing == true) {
+        if (loginState.isProcessing) {
             CircularProgressIndicator()
         }
 

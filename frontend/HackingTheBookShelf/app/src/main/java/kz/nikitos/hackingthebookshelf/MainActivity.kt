@@ -18,13 +18,22 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kz.nikitos.hackingthebookshelf.domain.repositories.JWTTokenRepository
+import kz.nikitos.hackingthebookshelf.ui.LoginState
 import kz.nikitos.hackingthebookshelf.ui.LoginViewModel
 import kz.nikitos.hackingthebookshelf.ui.composables.LoginScreen
 import kz.nikitos.hackingthebookshelf.ui.theme.HackingTheBookShelfTheme
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var jwtTokenRepository: JWTTokenRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,7 +47,7 @@ class MainActivity : ComponentActivity() {
             HackingTheBookShelfTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val viewModel = hiltViewModel<LoginViewModel>()
-                    val loginState by viewModel.uiState.observeAsState()
+                    val loginState by viewModel.uiState.observeAsState(LoginState())
                     LoginScreen(
                         loginState = loginState,
                         onValueChange = viewModel::updateCredentials,
@@ -75,9 +84,14 @@ class MainActivity : ComponentActivity() {
         Toast.makeText(this, "Notifications are not allowed", Toast.LENGTH_LONG).show()
     }
 
-    private fun alreadyAuthorised(): Boolean {
-        return false
-    }
+    private fun alreadyAuthorised(): Boolean = runBlocking {
+            try {
+                jwtTokenRepository.getToken()
+                return@runBlocking true
+            } catch (e: Exception) {
+                return@runBlocking false
+            }
+        }
 
     private fun goToLibraryActivity() {
         val goToLibraryActivity = Intent(this, LibraryActivity::class.java)

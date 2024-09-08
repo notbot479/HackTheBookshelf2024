@@ -6,9 +6,15 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kz.nikitos.hackingthebookshelf.data.data_sources.DataStorageUserCredentialsDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.FirebaseNotificationTokenStorage
+import kz.nikitos.hackingthebookshelf.data.data_sources.IntentCalendarDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.JWTDataSource
+import kz.nikitos.hackingthebookshelf.data.data_sources.KtorAchievmentsDataSource
+import kz.nikitos.hackingthebookshelf.data.data_sources.KtorBooksDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.KtorEventsDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.KtorTokenDataSource
+import kz.nikitos.hackingthebookshelf.domain.data_sources.AchievmentsDataSource
+import kz.nikitos.hackingthebookshelf.domain.data_sources.BooksDataSource
+import kz.nikitos.hackingthebookshelf.domain.data_sources.CalendarDataSource
 import kz.nikitos.hackingthebookshelf.domain.data_sources.EventsDataSource
 import kz.nikitos.hackingthebookshelf.domain.data_sources.LocalTokenDataSource
 import kz.nikitos.hackingthebookshelf.domain.data_sources.NotificationTokenStorage
@@ -49,4 +55,19 @@ interface DataSourcesModule {
     fun getNotificationTokenStorage(
         notificationTokenStorage: FirebaseNotificationTokenStorage
     ): NotificationTokenStorage
+
+    @Binds
+    fun getCalendarDataSource(
+        calendarDataSource: IntentCalendarDataSource
+    ): CalendarDataSource
+
+    @Binds
+    fun getBooksDataSource(
+        booksDataSource: KtorBooksDataSource
+    ): BooksDataSource
+
+    @Binds
+    fun getAchievmentsDataSource(
+        achievmentsDataSource: KtorAchievmentsDataSource
+    ): AchievmentsDataSource
 }

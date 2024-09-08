@@ -1,6 +1,7 @@
 package kz.nikitos.hackingthebookshelf
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -31,7 +33,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
+import kz.nikitos.hackingthebookshelf.ui.AchievmentsViewModel
+import kz.nikitos.hackingthebookshelf.ui.BooksViewModel
+import kz.nikitos.hackingthebookshelf.ui.Events
 import kz.nikitos.hackingthebookshelf.ui.EventsViewModel
+import kz.nikitos.hackingthebookshelf.ui.composables.AchievmentsScreen
+import kz.nikitos.hackingthebookshelf.ui.composables.BooksScreen
 import kz.nikitos.hackingthebookshelf.ui.composables.EventsScreen
 import kz.nikitos.hackingthebookshelf.ui.theme.HackingTheBookShelfTheme
 
@@ -101,19 +108,32 @@ class LibraryActivity : ComponentActivity() {
                         composable<NavigationDestination.EventsScreenDest> {
                             val viewModel = hiltViewModel<EventsViewModel>()
 
-                            viewModel.getEvents()
+                            val errorMessage by viewModel.errorMessage.observeAsState("")
+                            if (errorMessage.isNotEmpty()) {
+                                Toast.makeText(this@LibraryActivity, errorMessage, Toast.LENGTH_LONG).show()
+                            }
+//                            LaunchedEffect(key1 = Unit) {
+                                viewModel.getEvents()
+//                            }
                             val allEvents by viewModel.allEvents.observeAsState(emptyMap())
-                            val subscribedEvents by viewModel.subscribedEvent.observeAsState(
-                                emptyList()
-                            )
+                            val subscribedEvents by viewModel.subscribedEvent.observeAsState(emptyList())
 
                             EventsScreen(allEvents = allEvents, subscribedEvents, viewModel::registerOnEvent, modifier = Modifier.padding(horizontal = 6.dp))
                         }
                         composable<NavigationDestination.BooksScreenDestination> {
-                            Text(text = "Books screen")
+                            val viewModel = hiltViewModel<BooksViewModel>()
+                            try {
+                                viewModel.getBooks()
+                            } catch (e: Throwable) {
+                                Toast.makeText(this@LibraryActivity, "Something is wrong with request or internet", Toast.LENGTH_LONG).show()
+                            }
+                            val books by viewModel.books.observeAsState(emptyList())
+                            BooksScreen(books = books, viewModel::registerReminder)
                         }
                         composable<NavigationDestination.AchievmentsScreenDestination> {
-                            Text(text = "Achievements screen")
+                            val viewModel = hiltViewModel<AchievmentsViewModel>()
+                            val achievments by viewModel.achievments.observeAsState(emptyList())
+                            AchievmentsScreen(achievments)
                         }
                     }
                 }

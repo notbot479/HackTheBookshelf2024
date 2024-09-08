@@ -6,6 +6,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import kz.nikitos.hackingthebookshelf.data.data_sources.DataStorageUserCredentialsDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.InvalidCredentials
+import kz.nikitos.hackingthebookshelf.data.data_sources.KtorBooksDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.KtorEventsDataSource
 import kz.nikitos.hackingthebookshelf.data.data_sources.KtorTokenDataSource
 import kz.nikitos.hackingthebookshelf.data.repositories.MyJWTTokenRepository
@@ -34,6 +35,9 @@ class ExampleInstrumentedTest {
 
     @Inject
     lateinit var tokenRepository: MyJWTTokenRepository
+
+    @Inject
+    lateinit var booksDataSource: KtorBooksDataSource
 
     @Inject
     lateinit var dataStorageUserCredentialsDataSource: DataStorageUserCredentialsDataSource
@@ -129,6 +133,17 @@ class ExampleInstrumentedTest {
 
             val token = tokenRepository.getToken()
             eventsDataSource.unsubscribeEvent(2)
+        }
+    }
+
+    @Test
+    fun getDebtBooks() {
+        runBlocking {
+            tokenRepository.setCredentials("dio@heaven.jp", "777")
+
+            val token = tokenRepository.getToken()
+            val books = booksDataSource.getDebtBooks()
+            Log.d(TAG, "getDebtBooks: ${books.size} $books")
         }
     }
 

@@ -27,13 +27,13 @@
       <SelectionState runConfigName="subscribeToEvent()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="getUpcomingTodayEvents()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="getMyEvents()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="unsubscribeEvent()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="getDebtBooks()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
