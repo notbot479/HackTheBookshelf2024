@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="frontend.HackingTheBookShelf.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-09-07T15:09:11.356028772Z">
+        <DropdownSelection timestamp="2024-09-08T09:11:07.688902987Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=102702538V001494" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/home/yuto/.android/avd/Pixel_8_API_33.avd" />
             </handle>
           </Target>
         </DropdownSelection>
