@@ -17,6 +17,7 @@ class EventSerializer(serializers.ModelSerializer):
             'end_time',
             'is_registration_open',
             'attendees',
+            'send_push',
         ]
 
     def get_start_timestamp(self, obj) -> int:

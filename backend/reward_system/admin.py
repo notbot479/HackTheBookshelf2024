@@ -6,8 +6,7 @@ from .models import UserRewardCouter, UserAchievement
 @admin.register(UserRewardCouter)
 class UserRewardCounterAdmin(admin.ModelAdmin):
     list_display = ('user', 'event_counter', 'books_recovered')  
-    search_fields = ('user__username',)  
-    list_filter = ('event_counter', 'books_recovered')  
+    search_fields = ('user__username','event_counter', 'books_recovered')  
 
 
 @admin.register(UserAchievement)
